@@ -98,7 +98,7 @@ public class BoardDAO {
 
 	public int getMaxBoardNO() {
 		int maxNum = -1;
-		String sql="SELECT NVL(COUNT(*),0) FROM T_BOARD";
+		String sql="SELECT NVL(MAX(BOARD_NO),0) FROM T_BOARD";
 		
 		try {
 			conn = dataFactory.getConnection();

@@ -32,10 +32,14 @@
 		<td>${board.writeDate}</td>
 	</tr>
 	<tr>
+		<td>첨부 파일</td>
+		<td><a href="${contextPath}/board/downloadImage?imageName=${board.imageName}&boardNO=${board.boardNO}">${board.imageName}</a></td>
+	</tr>
+	<tr>
 		<td height="200px">글 내용</td>
 		<td>${board.content}</td>
 	</tr>
-	<%-- <td><a href="${contextPath}/board/detail?boardNO=${board.boardNO}">${board.title}</a></td> --%>
+	
 </table>
 <div style="padding-left: 20%">
 <a href="${contextPath}/board/list">뒤로가기</a><br>

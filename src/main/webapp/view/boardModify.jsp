@@ -11,7 +11,7 @@
 </head>
 <body>
 <h1>modify page</h1>
-<form action="${contextPath}/board/modifyBoard" method="post">
+<form action="${contextPath}/board/modifyBoard" method="post" enctype="multipart/form-data">
 <table border="1" align="center" width="60%">
 	<tr>
 		<td width="3%" >글 번호</td>
@@ -28,6 +28,10 @@
 	<tr>
 		<td>글 날짜</td>
 		<td style="color: gray;">${board.writeDate}</td>
+	</tr>
+	<tr>
+		<td>사진 첨부</td>
+		<td><input type="file" name="imageName" accept="image/*">${board.imageName}</td>
 	</tr>
 	<tr>
 		<td height="200px">글 내용</td>

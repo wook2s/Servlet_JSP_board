@@ -11,7 +11,7 @@
 </head>
 <body>
 <h1>insert page</h1>
-<form action="${contextPath}/board/insertBoard" method="post">
+<form action="${contextPath}/board/insertBoard" method="post" enctype="multipart/form-data">
 <table border="1" align="center" width="60%">
 	<tr>
 		<td width="5%">글 제목</td>
@@ -21,6 +21,11 @@
 		<td>글 작성자</td>
 		<td><input type="text" name="id" style="width:100%; height:18px; border: 0;"></td>
 	</tr>
+	<tr>
+		<td>사진 첨부</td>
+		<td><input type="file" name="imageName" accept="image/*"></td>
+	</tr>
+	
 	<tr>
 		<td height="200px">글 내용</td>
 		<td><textarea name="content" rows="18" style="width:100%;  border: 0;"></textarea></td>

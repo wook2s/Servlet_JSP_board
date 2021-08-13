@@ -12,8 +12,9 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+
 <body>
-<h1>detail page</h1>
+<jsp:include page="../include/header.jsp" flush="true"/>
 <table border="1" align="center" width="60%">
 	<tr>
 		<td width="3%">글 번호</td>
@@ -46,5 +47,6 @@
 <a href="${contextPath}/board/modifyForm?boardNO=${board.boardNO}">수정</a><br>
 <a href="${contextPath}/board/deleteBoard?boardNO=${board.boardNO}">삭제</a><br>
 </div>
+<jsp:include page="../include/footer.jsp" flush="true"/>
 </body>
 </html>

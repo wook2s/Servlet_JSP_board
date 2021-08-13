@@ -19,12 +19,15 @@
 	a{
 		text-decoration: none;
 	}
+	#container{
+		display: inline-block;
+	}
 
 </style>
 
 </head>
 <body>
-<h1>list page</h1>
+<jsp:include page="../include/header.jsp" flush="true"/>
 <div style="height: 300px">
 	<table border="1" align="center" width="80%">
 		<tr id="tableTitle">
@@ -69,10 +72,10 @@
 	<c:forEach begin="${start}" end="${start+4}" varStatus="cnt">
 		<c:if test="${cnt.current <= lastPage }">
 			<c:if test="${page != cnt.current}">
-			<a href="${contextPath}/board/list?page=${cnt.current}">${cnt.current}</a>
+				<a href="${contextPath}/board/list?page=${cnt.current}">${cnt.current}</a>
 			</c:if>
 			<c:if test="${page == cnt.current}">
-			<a href="${contextPath}/board/list?page=${cnt.current}" style="color: red;">${cnt.current}</a>
+				<a href="${contextPath}/board/list?page=${cnt.current}" style="color: red;">${cnt.current}</a>
 			</c:if>
 		</c:if>
 	</c:forEach>
@@ -87,6 +90,7 @@
 <div style="padding-left: 80%">
 	<p>총 게시물 : ${boardCount}</p>
 </div>
+<jsp:include page="../include/footer.jsp" flush="true"/>
 </body>
 </html>
 

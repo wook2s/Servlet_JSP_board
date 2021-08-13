@@ -5,7 +5,6 @@ import java.sql.Date;
 
 public class BoardVO {
 	
-	private int level;
 	private int boardNO;
 	private int parentNO;
 	private String title;
@@ -19,8 +18,7 @@ public class BoardVO {
 	}
 
 
-	public BoardVO(int level, int boardNO, int parentNO, String title, String content, String imageName, String id) {
-		this.level = level;
+	public BoardVO(int boardNO, int parentNO, String title, String content, String imageName, String id) {
 		this.boardNO = boardNO;
 		this.parentNO = parentNO;
 		this.title = title;
@@ -29,9 +27,8 @@ public class BoardVO {
 		this.id = id;
 	}
 
-	public BoardVO(int level, int boardNO, int parentNO, String title, String content, String imageName, String id,
+	public BoardVO(int boardNO, int parentNO, String title, String content, String imageName, String id,
 			Date writeDate) {
-		this.level = level;
 		this.boardNO = boardNO;
 		this.parentNO = parentNO;
 		this.title = title;
@@ -39,15 +36,6 @@ public class BoardVO {
 		this.imageName = imageName;
 		this.id = id;
 		this.writeDate = writeDate;
-	}
-
-
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
 	}
 
 	public int getBoardNO() {

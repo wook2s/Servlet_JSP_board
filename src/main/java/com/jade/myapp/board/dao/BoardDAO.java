@@ -28,21 +28,22 @@ public class BoardDAO {
 		}
 	}
 	
-	public List<BoardVO> getAllBoardList() {
+	public List<BoardVO> getAllBoardList(int page) {
 		
 		List<BoardVO> boardList = new ArrayList<>();
-		String sql="SELECT LEVEL, BOARD_NO, PARENT_NO, TITLE, CONTENT, IMAGE_NAME, ID, WRITE_DATE FROM T_BOARD "
-				+ " START WITH  PARENT_NO=0" + " CONNECT BY PRIOR BOARD_NO=PARENT_NO "
-				+ " ORDER SIBLINGS BY BOARD_NO DESC";
+		String sql="select * from( "
+				+ "select rownum as rnum, board_no, parent_no, title, image_name, write_date, id, content from( "
+				+ "select * from t_board order by board_no desc)) where rnum BETWEEN ? and ?";
 		
 		try {
 			conn = dataFactory.getConnection();
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 1+((page-1)*10));
+			pstmt.setInt(2, page*10);
 			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				BoardVO board = new BoardVO(
-						rs.getInt("LEVEL"), 
 						rs.getInt("BOARD_NO"),
 						rs.getInt("PARENT_NO"),
 						rs.getString("TITLE"), 
@@ -75,7 +76,6 @@ public class BoardDAO {
 			
 			if(rs.next()) {
 				board = new BoardVO(
-						-1, 
 						rs.getInt("BOARD_NO"), 
 						rs.getInt("PARENT_NO"), 
 						rs.getString("TITLE"), 
@@ -184,6 +184,27 @@ public class BoardDAO {
 			System.err.println("deleteBoard(int boardNO) 에러");
 			e.printStackTrace();
 		}
+	}
+
+	public int getCountBoardNO() {
+		int cnt = -1;
+		String sql="SELECT NVL(COUNT(BOARD_NO),0) FROM T_BOARD";
+		
+		try {
+			conn = dataFactory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				cnt = rs.getInt(1);
+			}
+			rs.close();
+			pstmt.close();
+			conn.close();
+		} catch (Exception e) {
+			System.err.println("getMaxBoardNO() 에러");
+		}
+		
+		return cnt;
 	}
 
 }

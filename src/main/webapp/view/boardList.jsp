@@ -16,39 +16,82 @@
 	table tr td{
 		text-align: center;
 	}
+	a{
+		text-decoration: none;
+	}
 
 </style>
 
 </head>
 <body>
 <h1>list page</h1>
-<table border="1" align="center" width="80%">
-	<tr id="tableTitle">
-		<td width="4%">글번호</td>
-		<td width="4%">작성자</td>
-		<td width="15%">제목</td>
-		<td width="4%">날짜</td>
-	</tr>
-	<c:choose>
-		<c:when test="${boardList == null }">
-		<tr >
-			<td colspan="4" align="center">등록된 글이 없습니다.</td>
+<div style="height: 300px">
+	<table border="1" align="center" width="80%">
+		<tr id="tableTitle">
+			<td width="4%">글번호</td>
+			<td width="4%">작성자</td>
+			<td width="15%">제목</td>
+			<td width="4%">날짜</td>
 		</tr>
-		</c:when>
-		<c:when test="${boardList != null}">
-		<c:forEach var="board" items="${boardList}">
-		<tr>
-			<td>${board.boardNO}</td>
-			<td>${board.id}</td>
-			<td><a href="${contextPath}/board/detail?boardNO=${board.boardNO}">${board.title}</a></td>
-			<td>${board.writeDate}</td>
-		</tr>
-		</c:forEach>
-		</c:when>
-	</c:choose>
-</table>
+		<c:choose>
+			<c:when test="${boardList == null }">
+			<tr >
+				<td colspan="4" align="center">등록된 글이 없습니다.</td>
+			</tr>
+			</c:when>
+			<c:when test="${boardList != null}">
+			<c:forEach var="board" items="${boardList}">
+			<tr>
+				<td>${board.boardNO}</td>
+				<td>${board.id}</td>
+				<td><a href="${contextPath}/board/detail?boardNO=${board.boardNO}">${board.title}</a></td>
+				<td>${board.writeDate}</td>
+			</tr>
+			</c:forEach>
+			</c:when>
+		</c:choose>
+	</table>
+</div>
 <div style="padding-left: 10%">
 <a href="${contextPath}/board/insertForm">글쓰기</a><br>
 </div>
+
+<div id="pager" style="padding-left: 50%">
+	<span style="display: inline-block; width: 21px ">
+	<c:if test="${page != 1}">
+		<span><a href="${contextPath}/board/list?page=${page-1}">[&lt]</a></span>
+	</c:if>
+	</span>
+	
+	<span  style="width: 70px; display:inline-block;">
+	<fmt:parseNumber var="boardCount" value="${boardCount}"/>
+	<c:set var="start" value="${(((page-1)/5) - (((page-1)/5)%1))*5+1}" />
+	<c:forEach begin="${start}" end="${start+4}" varStatus="cnt">
+		<c:if test="${cnt.current <= lastPage }">
+			<c:if test="${page != cnt.current}">
+			<a href="${contextPath}/board/list?page=${cnt.current}">${cnt.current}</a>
+			</c:if>
+			<c:if test="${page == cnt.current}">
+			<a href="${contextPath}/board/list?page=${cnt.current}" style="color: red;">${cnt.current}</a>
+			</c:if>
+		</c:if>
+	</c:forEach>
+	</span>
+	
+	<span style="display: inline-block; width: 21px">
+	<c:if test="${page != lastPage}">
+		<span><a href="${contextPath}/board/list?page=${page+1}">[&gt]</a></span> 
+	</c:if>
+	</span>
+</div>
+<div style="padding-left: 80%">
+	<p>총 게시물 : ${boardCount}</p>
+</div>
 </body>
 </html>
+
+
+
+
+
+

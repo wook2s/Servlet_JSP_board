@@ -13,8 +13,8 @@ public class BoardService {
 		boardDAO = new BoardDAO();
 	}
 	
-	public List<BoardVO> getAllBoardList() {
-		List<BoardVO> boardList = boardDAO.getAllBoardList();
+	public List<BoardVO> getAllBoardList(int page) {
+		List<BoardVO> boardList = boardDAO.getAllBoardList(page);
 		return boardList;
 	}
 
@@ -38,6 +38,11 @@ public class BoardService {
 
 	public void deleteBoard(int boardNO) {
 		boardDAO.deleteBoard(boardNO);
+	}
+
+	public int getCountBoardNO() {
+		int cnt = boardDAO.getCountBoardNO() ;
+		return cnt;
 	}
 
 }

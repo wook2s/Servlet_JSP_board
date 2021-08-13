@@ -3,7 +3,6 @@ package com.jade.myapp.board.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -54,7 +54,31 @@ public class BoardController extends HttpServlet {
 		System.out.println("요청 주소 : " + action);
 
 		if (action == null || action.equals("/list") || action.equals("/")) {
-			List<BoardVO> boardList = boardService.getAllBoardList();
+
+			Integer page = 1;
+			
+			String _page = request.getParameter("page");
+			System.out.println("_page : "+_page);
+			if(_page !=null) {
+				page = Integer.valueOf(_page);
+			}
+			System.out.println("page : "+page);
+			
+			Integer boardCount = boardService.getCountBoardNO();
+			Integer lastPage =0;
+			if(boardCount %10 ==0) {
+				lastPage = boardCount/10;
+			}else {
+				lastPage = boardCount/10 +1;
+			}
+			System.out.println("lastPage : "+lastPage);
+			System.out.println("boardCount : "+boardCount);
+			request.setAttribute("page", page);
+			request.setAttribute("lastPage", lastPage);
+			request.setAttribute("boardCount", boardCount);
+			
+			
+			List<BoardVO> boardList = boardService.getAllBoardList(page);
 			System.out.println("리스트 길이 : " + boardList.size());
 			request.setAttribute("boardList", boardList);
 			nextPage = "/view/boardList.jsp";
@@ -121,12 +145,9 @@ public class BoardController extends HttpServlet {
 				for (int i = 0; i < items.size(); i++) {
 					FileItem fileItem = (FileItem) items.get(i);
 					if (!fileItem.isFormField() && fileItem.getName().length() > 0) {
-						System.out.println("변수 이름 : " + fileItem.getFieldName());
-						System.out.println("파일 이름 : " + fileItem.getName());
 						if (fileItem.getName().length() > 0) {
 							fileName = fileItem.getName();
 						}
-						System.out.println("파일 크기 : " + fileItem.getSize());
 						File fileForPathAndName = new File(filePath + File.separator + fileItem.getName());
 						fileItem.write(fileForPathAndName);
 					} else {
@@ -145,7 +166,7 @@ public class BoardController extends HttpServlet {
 				e.printStackTrace();
 			}
 
-			BoardVO board = new BoardVO(-1, maxNum, 0, title, content, fileName, id);
+			BoardVO board = new BoardVO(maxNum, 0, title, content, fileName, id);
 			boardService.insertBoard(board);
 			nextPage = "/board/list";
 
@@ -189,10 +210,6 @@ public class BoardController extends HttpServlet {
 						if (fileItem.getName().length() > 0) {
 							tmpImageName = fileItem.getName();
 						}
-						System.out.println("변수 이름 : " + fileItem.getFieldName());
-						System.out.println("파일 이름 : " + fileItem.getName());
-						System.out.println("파일 크기 : " + fileItem.getSize());
-						
 						System.out.println("기존 파일 이름 : "+imageName);
 						System.out.println("신규 파일 이름 : "+tmpImageName);
 						
@@ -254,7 +271,6 @@ public class BoardController extends HttpServlet {
 			} else {
 				System.out.println("파일이 존재하지 않습니다.");
 			}
-
 			boardService.deleteBoard(boardNO);
 			nextPage = "/board/list";
 		}

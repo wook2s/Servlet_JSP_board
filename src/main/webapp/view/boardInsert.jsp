@@ -35,8 +35,6 @@
 	<a href="${contextPath}/board/list">뒤로가기</a><br>
 	<input type="submit" value="저장">
 	<input type="reset" value="초기화"><br>
-	<a href="${contextPath}/board/insertBoard">저장</a><br>
-	<a href="${contextPath}/board/insertForm">취소</a><br>
 	</div>
 </form>
 

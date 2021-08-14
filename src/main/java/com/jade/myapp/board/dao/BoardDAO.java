@@ -31,9 +31,15 @@ public class BoardDAO {
 	public List<BoardVO> getAllBoardList(int page) {
 		
 		List<BoardVO> boardList = new ArrayList<>();
-		String sql="select * from( "
-				+ "select rownum as rnum, board_no, parent_no, title, image_name, write_date, id, content from( "
-				+ "select * from t_board order by board_no desc)) where rnum BETWEEN ? and ?";
+		String sql="    select * from( "
+				+ "    select * from "
+				+ "        (select rownum rnum, board_no, parent_no, title, image_name, write_date, id, content from "
+				+ "            (select * from t_board order by board_no desc) order by board_no desc) b "
+				+ "            left join \r\n"
+				+ "            (select board_no, count(*) recnt from t_reply group by board_no) r"
+				+ "    on b.board_no = r.board_no "
+				+ "    order by b.board_no desc) "
+				+ "    where rnum between ? and ?";
 		
 		try {
 			conn = dataFactory.getConnection();
@@ -50,7 +56,8 @@ public class BoardDAO {
 						rs.getString("CONTENT"),
 						rs.getString("IMAGE_NAME"), 
 						rs.getString("ID"),
-						rs.getDate("WRITE_DATE")
+						rs.getDate("WRITE_DATE"),
+						rs.getInt("RECNT")
 						);
 				
 				boardList.add(board);

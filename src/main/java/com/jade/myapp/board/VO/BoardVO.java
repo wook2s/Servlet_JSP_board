@@ -12,11 +12,11 @@ public class BoardVO {
 	private String imageName;
 	private String id;
 	private Date writeDate;
+	private int reCnt;
 
 	public BoardVO() {
 		// TODO Auto-generated constructor stub
 	}
-
 
 	public BoardVO(int boardNO, int parentNO, String title, String content, String imageName, String id) {
 		this.boardNO = boardNO;
@@ -36,6 +36,18 @@ public class BoardVO {
 		this.imageName = imageName;
 		this.id = id;
 		this.writeDate = writeDate;
+	}
+	
+	public BoardVO(int boardNO, int parentNO, String title, String content, String imageName, String id, Date writeDate,
+			int reCnt) {
+		this.boardNO = boardNO;
+		this.parentNO = parentNO;
+		this.title = title;
+		this.content = content;
+		this.imageName = imageName;
+		this.id = id;
+		this.writeDate = writeDate;
+		this.reCnt = reCnt;
 	}
 
 	public int getBoardNO() {
@@ -94,4 +106,11 @@ public class BoardVO {
 		this.writeDate = writeDate;
 	}
 
+	public int getReCnt() {
+		return reCnt;
+	}
+	
+	public void setReCnt(int reCnt) {
+		this.reCnt = reCnt;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jade.myapp.board.VO.BoardVO;
 import com.jade.myapp.board.dao.BoardDAO;
+import com.jade.myapp.board.dao.ReplyDAO;
 
 public class BoardService {
 

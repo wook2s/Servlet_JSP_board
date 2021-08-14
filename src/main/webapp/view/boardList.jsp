@@ -47,7 +47,7 @@
 			<tr>
 				<td>${board.boardNO}</td>
 				<td>${board.id}</td>
-				<td><a href="${contextPath}/board/detail?boardNO=${board.boardNO}">${board.title}</a></td>
+				<td style="text-align: left; padding-left: 15px"><a href="${contextPath}/board/detail?boardNO=${board.boardNO}">${board.title} &nbsp [${board.reCnt}]</a></td>
 				<td>${board.writeDate}</td>
 			</tr>
 			</c:forEach>

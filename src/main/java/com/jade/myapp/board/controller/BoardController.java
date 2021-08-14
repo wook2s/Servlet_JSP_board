@@ -19,17 +19,22 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.jade.myapp.board.VO.BoardVO;
+import com.jade.myapp.board.VO.ReplyVO;
 import com.jade.myapp.board.service.BoardService;
+import com.jade.myapp.board.service.ReplyService;
 
 @WebServlet("/board/*")
 public class BoardController extends HttpServlet {
 
 	BoardService boardService;
+	ReplyService replyService;
+	
 	private static final String FILE_PATH = "C:\\file_repo";
 
 	@Override
 	public void init() throws ServletException {
 		boardService = new BoardService();
+		replyService = new ReplyService();
 	}
 
 	@Override
@@ -79,7 +84,6 @@ public class BoardController extends HttpServlet {
 			
 			
 			List<BoardVO> boardList = boardService.getAllBoardList(page);
-			System.out.println("리스트 길이 : " + boardList.size());
 			request.setAttribute("boardList", boardList);
 			nextPage = "/view/boardList.jsp";
 		}
@@ -89,7 +93,10 @@ public class BoardController extends HttpServlet {
 			int boardNO = Integer.parseInt(_boardNO);
 			BoardVO board = boardService.getBoard(boardNO);
 
+			List<ReplyVO> replyList = replyService.getReplyList(boardNO);
+			
 			request.setAttribute("board", board);
+			request.setAttribute("replyList", replyList);
 			nextPage = "/view/boardDetail.jsp";
 			
 		} else if (action.equals("/downloadImage")) {
@@ -273,6 +280,74 @@ public class BoardController extends HttpServlet {
 			}
 			boardService.deleteBoard(boardNO);
 			nextPage = "/board/list";
+		}
+		else if(action.equals("/addReply")) {
+			String _boardNO = request.getParameter("boardNO");
+			Integer boardNO = Integer.valueOf(_boardNO);
+			String id = request.getParameter("id");
+			String content = request.getParameter("content");
+			int replyNO = replyService.getMaxReplyNO()+1;
+			
+			ReplyVO reply = new ReplyVO(replyNO, boardNO, id, content);
+			replyService.addReply(reply);
+			
+			nextPage = "/board/detail?boardNO="+_boardNO;
+			
+		}
+		else if(action.equals("/deleteReply")) {
+			String _boardNO = request.getParameter("boardNO");
+			String _replyNO = request.getParameter("replyNO");
+			Integer replyNO = Integer.valueOf(_replyNO);
+			
+			replyService.deleteReply(replyNO);
+			
+			nextPage = "/board/detail?boardNO="+_boardNO;
+			
+		}else if(action.equals("/modifyReplyForm")) {
+			String _boardNO = request.getParameter("boardNO");
+			int boardNO = Integer.parseInt(_boardNO);
+
+			String _replyNO = request.getParameter("replyNO");
+			int replyNO = Integer.parseInt(_replyNO);
+			
+			BoardVO board = boardService.getBoard(boardNO);
+			List<ReplyVO> replyList = replyService.getReplyList(boardNO);
+			
+			request.setAttribute("board", board);
+			request.setAttribute("replyList", replyList);
+			request.setAttribute("replyNO", replyNO);
+			System.out.println(replyNO);
+			System.out.println(boardNO);
+			
+			HttpSession session = request.getSession(); 
+			session.setAttribute("replyNO", replyNO);
+			session.setAttribute("boardNO", boardNO);
+			
+			nextPage = "/view/boardModifyForReply.jsp";
+		}
+		else if(action.equals("/modifyReply")) {
+			
+			System.out.println(request.getParameter("content"));
+			HttpSession session = request.getSession();
+			
+			Integer replyNO = (Integer) session.getAttribute("replyNO");
+			Integer boardNO = (Integer) session.getAttribute("boardNO");
+			
+			System.out.println(replyNO);
+			System.out.println(boardNO);
+			
+			request.getSession().removeAttribute("boardNO");
+			request.getSession().removeAttribute("replyNO");
+			
+			ReplyVO reply = replyService.getReply(replyNO);
+			reply.setContent(request.getParameter("content"));
+			
+			System.out.println(reply.toString());
+			
+			replyService.updateReply(reply);
+			
+			nextPage = "/board/detail?boardNO="+boardNO;
+			
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);

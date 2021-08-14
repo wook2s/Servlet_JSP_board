@@ -28,7 +28,11 @@
 </head>
 <body>
 <jsp:include page="../include/header.jsp" flush="true"/>
-<div style="height: 300px">
+<div style="height: 360px">
+	<c:if test="${!empty id }">
+		<p style="text-align: center;">'${id}'님 접속을 환영합니다. <a href="${contextPath}/board/logout">[로그아웃하기]</a></p>
+		
+	</c:if>
 	<table border="1" align="center" width="80%">
 		<tr id="tableTitle">
 			<td width="4%">글번호</td>

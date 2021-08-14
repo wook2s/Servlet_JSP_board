@@ -21,6 +21,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import com.jade.myapp.board.VO.BoardVO;
 import com.jade.myapp.board.VO.ReplyVO;
 import com.jade.myapp.board.service.BoardService;
+import com.jade.myapp.board.service.MemberService;
 import com.jade.myapp.board.service.ReplyService;
 
 @WebServlet("/board/*")
@@ -28,6 +29,7 @@ public class BoardController extends HttpServlet {
 
 	BoardService boardService;
 	ReplyService replyService;
+	MemberService memberService;
 	
 	private static final String FILE_PATH = "C:\\file_repo";
 
@@ -35,6 +37,7 @@ public class BoardController extends HttpServlet {
 	public void init() throws ServletException {
 		boardService = new BoardService();
 		replyService = new ReplyService();
+		memberService = new MemberService();
 	}
 
 	@Override
@@ -58,7 +61,35 @@ public class BoardController extends HttpServlet {
 		String nextPage = "/view/boardList.jsp";
 		System.out.println("요청 주소 : " + action);
 
-		if (action == null || action.equals("/list") || action.equals("/")) {
+		HttpSession session = request.getSession();
+		
+		//----------------로그인-------------------
+		
+		if(action.equals("/loginForm")) {
+			nextPage = "/member/signin.jsp";
+		}
+		
+		else if(action.equals("/login")) {
+			String id = request.getParameter("id");
+			String pwd = request.getParameter("pwd");
+			boolean checkMember = memberService.checkMember(id, pwd);
+			
+			System.out.println("로그인 결과 : "+checkMember);
+			if(checkMember == true) {
+				session.setAttribute("id", id);
+				response.sendRedirect("/Servlet_JSP_Board/board/list");
+				return;
+			}else if(checkMember == false){
+				response.sendRedirect("/Servlet_JSP_Board/board/loginForm");
+				return;
+			}
+		}else if(action.equals("/logout")) {
+			session.removeAttribute("id");
+			response.sendRedirect("/Servlet_JSP_Board/board/list");
+			return;
+		}
+		//----------------로그인-------------------
+		else if (action == null || action.equals("/list") || action.equals("/")) {
 
 			Integer page = 1;
 			
@@ -78,6 +109,9 @@ public class BoardController extends HttpServlet {
 			}
 			System.out.println("lastPage : "+lastPage);
 			System.out.println("boardCount : "+boardCount);
+			String id = (String) session.getAttribute("id");
+			
+			request.setAttribute("id", id);
 			request.setAttribute("page", page);
 			request.setAttribute("lastPage", lastPage);
 			request.setAttribute("boardCount", boardCount);
@@ -89,6 +123,14 @@ public class BoardController extends HttpServlet {
 		}
 
 		else if (action.equals("/detail")) {
+			
+			String id = (String)session.getAttribute("id");
+			if( id == null || id.equals("")) {
+				response.sendRedirect("/Servlet_JSP_Board/board/loginForm");
+				return;
+			}
+			request.setAttribute("id",id);
+			
 			String _boardNO = request.getParameter("boardNO");
 			int boardNO = Integer.parseInt(_boardNO);
 			BoardVO board = boardService.getBoard(boardNO);
@@ -128,6 +170,12 @@ public class BoardController extends HttpServlet {
 		}
 
 		else if (action.equals("/insertForm")) {
+			String id = (String)session.getAttribute("id");
+			if( id == null || id.equals("")) {
+				response.sendRedirect("/Servlet_JSP_Board/board/loginForm");
+				return;
+			}
+			request.setAttribute("id",id);
 			nextPage = "/view/boardInsert.jsp";
 			
 		} else if (action.equals("/insertBoard")) {
@@ -160,10 +208,13 @@ public class BoardController extends HttpServlet {
 					} else {
 						if (fileItem.getFieldName().equals("id")) {
 							id = fileItem.getString("UTF-8");
+							System.out.println("id : " +id);
 						} else if (fileItem.getFieldName().equals("title")) {
 							title = fileItem.getString("UTF-8");
+							System.out.println("title : " +title);
 						} else if (fileItem.getFieldName().equals("content")) {
 							content = fileItem.getString("UTF-8");
+							System.out.println("content : " +content);
 						}
 
 					}
@@ -175,7 +226,8 @@ public class BoardController extends HttpServlet {
 
 			BoardVO board = new BoardVO(maxNum, 0, title, content, fileName, id);
 			boardService.insertBoard(board);
-			nextPage = "/board/list";
+			response.sendRedirect("/Servlet_JSP_Board/board/list");
+			return;
 
 		} else if (action.equals("/modifyForm")) {
 			String _boardNO = request.getParameter("boardNO");
@@ -278,10 +330,15 @@ public class BoardController extends HttpServlet {
 			} else {
 				System.out.println("파일이 존재하지 않습니다.");
 			}
+			replyService.deleteReplyByBoardNO(boardNO);
 			boardService.deleteBoard(boardNO);
 			nextPage = "/board/list";
 		}
 		else if(action.equals("/addReply")) {
+			if((String)session.getAttribute("id") == null) {
+				response.sendRedirect("/Servlet_JSP_Board/board/loginForm");
+				return;
+			}
 			String _boardNO = request.getParameter("boardNO");
 			Integer boardNO = Integer.valueOf(_boardNO);
 			String id = request.getParameter("id");
@@ -319,7 +376,7 @@ public class BoardController extends HttpServlet {
 			System.out.println(replyNO);
 			System.out.println(boardNO);
 			
-			HttpSession session = request.getSession(); 
+			session = request.getSession(); 
 			session.setAttribute("replyNO", replyNO);
 			session.setAttribute("boardNO", boardNO);
 			
@@ -328,7 +385,7 @@ public class BoardController extends HttpServlet {
 		else if(action.equals("/modifyReply")) {
 			
 			System.out.println(request.getParameter("content"));
-			HttpSession session = request.getSession();
+			session = request.getSession();
 			
 			Integer replyNO = (Integer) session.getAttribute("replyNO");
 			Integer boardNO = (Integer) session.getAttribute("boardNO");

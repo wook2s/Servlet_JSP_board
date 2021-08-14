@@ -39,4 +39,8 @@ public class ReplyService {
 	public void updateReply(ReplyVO reply) {
 		replyDAO.updateReply(reply);
 	}
+
+	public void deleteReplyByBoardNO(int boardNO) {
+		replyDAO.deleteReplyByBoardNO(boardNO);
+	}
 }

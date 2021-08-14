@@ -19,7 +19,7 @@
 		</tr>
 		<tr>
 			<td>글 작성자</td>
-			<td><input type="text" name="id" style="width:100%; height:18px; border: 0;"></td>
+			<td><input type="text" name="id" style="width:100%; height:18px; border: 0;" value="${id}" readonly="readonly"></td>
 		</tr>
 		<tr>
 			<td>사진 첨부</td>

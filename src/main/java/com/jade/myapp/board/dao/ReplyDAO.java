@@ -177,6 +177,23 @@ public class ReplyDAO {
 			e.printStackTrace();
 		}
 	}
+
+	public void deleteReplyByBoardNO(int boardNO) {
+		String sql ="DELETE T_REPLY WHERE BOARD_NO = ?";
+		try {
+			conn = dataFactory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,boardNO);
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			conn.close();
+		} catch (Exception e) {
+			System.err.println("deleteReplyByBoardNO(int boardNO) 에러");
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 }

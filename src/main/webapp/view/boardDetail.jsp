@@ -64,8 +64,16 @@
 				<td>${reply.id}</td>
 				<td>${reply.content}</td>
 				<td>${reply.writeDate}</td>
-				<td><a href="${contextPath}/board/modifyReplyForm?boardNO=${board.boardNO}&replyNO=${reply.replyNO}">수정</a></td>
-				<td><a href="${contextPath}/board/deleteReply?boardNO=${board.boardNO}&replyNO=${reply.replyNO}">삭제</a></td>
+				<td>
+					<c:if test="${id == reply.id}">
+					<a href="${contextPath}/board/modifyReplyForm?boardNO=${board.boardNO}&replyNO=${reply.replyNO}">수정</a>
+					</c:if>
+				</td>
+				<td>
+					<c:if test="${id == reply.id}">
+					<a href="${contextPath}/board/deleteReply?boardNO=${board.boardNO}&replyNO=${reply.replyNO}">삭제</a>
+					</c:if>
+				</td>
 			</tr>
 		</c:forEach>
 		</c:when>
@@ -79,7 +87,7 @@
 				<td width="20%">내용</td>
 			</tr>
 			<tr>
-				<td><input type="text" name="id" style="width:95%; height:18px; border: 0;"/></td>
+				<td><input type="text" name="id" style="width:95%; height:18px; border: 0;" value="${id}" readonly="readonly"/></td>
 				<td><input type="text" name="content" style="width:99%; height:18px; border: 0;"/></td>
 			</tr>
 		</table>
@@ -93,8 +101,10 @@
 </div>
 <div style="padding-left: 10%">
 <a href="${contextPath}/board/list">뒤로가기</a><br>
-<a href="${contextPath}/board/modifyForm?boardNO=${board.boardNO}">수정</a><br>
-<a href="${contextPath}/board/deleteBoard?boardNO=${board.boardNO}">삭제</a><br>
+	<c:if test="${id == board.id}">
+		<a href="${contextPath}/board/modifyForm?boardNO=${board.boardNO}">수정</a><br>
+		<a href="${contextPath}/board/deleteBoard?boardNO=${board.boardNO}">삭제</a><br>
+	</c:if>
 </div>
 <jsp:include page="../include/footer.jsp" flush="true"/>
 </body>

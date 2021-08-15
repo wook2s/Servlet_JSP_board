@@ -33,6 +33,15 @@
 		<p style="text-align: center;">'${id}'님 접속을 환영합니다. <a href="${contextPath}/board/logout">[로그아웃하기]</a></p>
 		
 	</c:if>
+	<c:if test="${empty id }">
+		<p style="text-align: center;">
+			로그인 하세요
+			<a href="${contextPath}/board/loginForm">[로그인]</a>
+			/
+			<a href="${contextPath}/board/signupForm">[회원가입]</a>
+		</p>
+		
+	</c:if>
 	<table border="1" align="center" width="80%">
 		<tr id="tableTitle">
 			<td width="4%">글번호</td>

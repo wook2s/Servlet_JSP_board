@@ -3,6 +3,7 @@ package com.jade.myapp.board.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -50,6 +51,30 @@ public class MemberDAO {
 			e.printStackTrace();
 		}
 		
+		return result;
+	}
+
+	public boolean addMember(MemberVO memberVO) {
+		String sql="INSERT INTO T_MEMBER (ID, PWD, NAME, EMAIL) VALUES (?,?,?,?)";
+		boolean result = false;
+		try {
+			conn = dataFactory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, memberVO.getId());
+			pstmt.setString(2, memberVO.getPwd());
+			pstmt.setString(3, memberVO.getName());
+			pstmt.setString(4, memberVO.getEmail());
+			
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			conn.close();
+			
+			result = true;
+		} catch (SQLException e) {
+			result = false;
+			e.printStackTrace();
+		}
 		return result;
 	}
 

@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.jade.myapp.board.VO.BoardVO;
+import com.jade.myapp.board.VO.MemberVO;
 import com.jade.myapp.board.VO.ReplyVO;
 import com.jade.myapp.board.service.BoardService;
 import com.jade.myapp.board.service.MemberService;
@@ -89,7 +90,39 @@ public class BoardController extends HttpServlet {
 			return;
 		}
 		//----------------로그인-------------------
-		else if (action == null || action.equals("/list") || action.equals("/")) {
+		
+		
+		//-------------- 회원 가입 -------------------
+		if(action.equals("/signupForm")) {
+			nextPage = "/member/signup.jsp";
+		}
+		else if (action.equals("/signup")) {
+			String id = request.getParameter("id");
+			String pwd = request.getParameter("pwd");
+			String name = request.getParameter("name");
+			String email = request.getParameter("email");
+			
+			MemberVO memberVO = new MemberVO();
+			memberVO.setId(id);
+			memberVO.setPwd(pwd);
+			memberVO.setName(name);
+			memberVO.setEmail(email);
+			
+			boolean result = memberService.addMember(memberVO);
+			if(result == true) {
+				response.sendRedirect("/Servlet_JSP_Board/board/list");
+				return;
+			}else{
+				System.out.println("실패 페이지 재요청");
+				request.setAttribute("message", "회원가입실패, 아이디를 확인해주세요.");
+				nextPage = "/member/signup.jsp";
+			}
+		}
+		//-------------- 회원 가입 -------------------
+
+		
+		
+		if (action == null || action.equals("/list") || action.equals("/")) {
 
 			Integer page = 1;
 			
@@ -406,7 +439,9 @@ public class BoardController extends HttpServlet {
 			nextPage = "/board/detail?boardNO="+boardNO;
 			
 		}
-
+//		if(nextPage == null || nextPage.equals("")) {
+//			nextPage = "/board/list";
+//		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);
 		dispatcher.forward(request, response);
 	}

@@ -33,7 +33,7 @@
 	<br><br>
 	
 	<div align="center">
-    <a href="signup.jsp">회원가입</a>
+    <a href="${contextPath}/board/signupForm">회원가입</a>
     </div>
 </form>
 </body>

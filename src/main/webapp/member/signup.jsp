@@ -11,7 +11,14 @@
    <meta charset="UTF-8">
    <title>회원 등록창</title>
 <body>
-<form method="post"   action="#">
+
+	<c:if test="${!empty message}">
+		<script type="text/javascript">
+			alert("${message}");
+		</script>
+	</c:if>
+
+<form method="post"   action="${contextPath}/board/signup">
 <h1  style="text-align:center">회원 등록창</h1>
 <table  align="center">
     <tr>
